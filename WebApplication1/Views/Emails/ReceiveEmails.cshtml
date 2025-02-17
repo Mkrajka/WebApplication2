@@ -1,0 +1,42 @@
+﻿@using MimeKit;
+@{
+    ViewBag.Title = "Received Emails";
+}
+
+<h2>Received Emails for @ViewBag.EmailAddress</h2>
+
+<div>
+    @if (ViewBag.ReceivedEmails != null && ViewBag.ReceivedEmails.Count > 0)
+    {
+        <!-- Display received emails here -->
+        @foreach (var email in ViewBag.ReceivedEmails)
+        {
+            <div>
+                <h4>Subject: @email.Subject</h4>
+                <p>From: @email.From
+                <p>Body: @Html.Raw(GetPlainTextBody(email))</p>
+            </div>
+            <hr />
+        }
+    }
+    else if (ViewBag.ReceivedEmails != null && ViewBag.ReceivedEmails.Count == 0)
+    {
+        <p>No emails found for @ViewBag.EmailAddress</p>
+    }
+</div>
+
+@functions {
+    // Function to extract the plaintext body from the received email
+    public string GetPlainTextBody(MimeMessage email)
+    {
+        foreach (var part in email.BodyParts)
+        {
+            if (part is TextPart textPart)
+            {
+                return textPart.Text;
+            }
+        }
+
+        return ""; // Return empty string if plaintext body not found
+    }
+}

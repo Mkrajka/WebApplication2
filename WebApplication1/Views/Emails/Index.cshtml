@@ -1,0 +1,474 @@
+﻿@model WebApplication1.Models.Email
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "/Pages/_Layout.cshtml";
+}
+
+
+<style>
+
+    .memberBody {
+        width: 100%;
+        padding: 20px;
+        height: 100%;
+        background-color: #FAFAFA;
+    }
+
+    .upperBody {
+        height: 10%;
+        width: 100%;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        padding-top: 18px;
+    }
+
+    .middleBody {
+        display: flex;
+        padding-top: 20px;
+        height: 90%;
+        width: 100%;
+    }
+
+    .middleBody-Left {
+        height: 100%;
+        width: 30%;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+    }
+
+    .buttonWrapper {
+        padding: 25px;
+        text-align:center;
+    }
+
+
+    .btn-display {
+        background-color: #304D70; /* Default background color */
+        color: #FFFFFF; /* Default text color */
+        padding: 10px 40px; /* Padding for wider buttons */
+        border: none; /* Remove border */
+        outline: none; /* Remove outline */
+        border-radius: 5px; /* Add border radius */
+        transition: all 0.3s; /* Smooth transition */
+    }
+
+        .btn-display:hover {
+            color: white;
+            background-color: #405D80; /* Darken background color on hover */
+            /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
+        }
+
+        .btn-display:focus {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+        }
+
+        .btn-display:not(:focus) {
+            /* background-color: #90A4B6;  */
+            background-color: rgba(48, 77, 112, 0.2);
+            color: rgba(48, 77, 112, 1);
+        }
+
+        .btn-display.selected {
+            background-color: #405D80; 
+            color: white; 
+        }
+
+
+    /*This is for the search bar*/
+    .searchWrapper {
+        padding: 0px 25px;
+        text-align: center;
+    }
+
+    .search-container input {
+        width: 100%;
+        border-radius: 5px;
+    }
+
+
+    .search-bar {
+        width: 96%;
+        /* padding-left: 20px; */
+        /* padding-right: 50px; */
+    }
+
+
+
+
+    .search-container {
+        position: relative;
+        display: flex;
+    }
+
+    .search-input {
+        flex: 1;
+        background-color: #D9D9D9; 
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        height: 40px;
+    }
+
+    .search-button {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        margin-left: -30px;
+    }
+
+        .search-button i {
+            font-size: 18px;
+            color: #888;
+        }
+    
+        
+
+    /*This is for the results for the email*/
+    .resultWrapper{
+        /* background-color: red; */
+        padding: 25px;
+        height: 75%;
+        overflow-y: auto;
+    }
+
+    .member-list {
+        list-style-type: none; /* Remove default list styles */
+        padding: 0; /* Remove default padding */
+    }
+
+
+    .member-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .member-item {
+        /* padding: 70px 5px; */
+        padding: 5px 0;
+    }
+
+    .member-info {
+        /* display: flex; */
+        height: 50px;
+        /* border-radius: 5px; */
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 20px;
+    }
+
+        .member-info:hover {
+            background-color: rgba(48, 77, 112, 0.2);
+            /* background-color: red; */ 
+            color: black; /* Change text color on hover */
+        }
+
+        .member-list li {
+            /* padding: 5px 0; /* Add padding between list items */ */
+        }
+
+    /* Style for the scrollbar */
+    .resultWrapper::-webkit-scrollbar {
+        width: 10px; /* Width of the scrollbar */
+    }
+
+    /* Track */
+    .resultWrapper::-webkit-scrollbar-track {
+        background: transparent; /* Background color of the scrollbar track */
+    }
+
+    /* Handle */
+    .resultWrapper::-webkit-scrollbar-thumb {
+        background: #304D70;
+        ; /* Color of the scrollbar handle */
+        border-radius: 5px; /* Border radius of the scrollbar handle */
+    }
+
+        /* Handle on hover */
+        .resultWrapper::-webkit-scrollbar-thumb:hover {
+            background: #304D70; /* Change color on hover */
+        }
+
+
+        .member-list-left p {
+            margin: 0;
+        }
+
+    .member-list-right p {
+        padding-bottom: 10px;
+    }
+
+    .middleBody-Right {
+        width: 70%;
+        height: 100%;
+        padding-left: 15px;
+    }
+
+    .middleBody-Right-Inner {
+        background-color: white;
+        border-radius: 5px;
+        height: 100%;
+        width: 100%;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        overflow-y: auto;
+        padding: 40px;
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
+    }
+
+    .middleBody-Right-Bottom {
+        height: 30%;
+        background-color: white;
+    }
+
+
+    .align-left {
+        text-align: left;
+    }
+
+    .align-right {
+        text-align: right;
+    }
+
+
+    .inputBox {
+        padding: 10px 20px;
+    }
+
+    
+</style>
+
+
+<div class="memberBody">
+    <div class="upperBody">
+        <h4><b>Chat</b></h4>
+    </div>
+
+
+    <div class="middleBody">
+        <div class="middleBody-Left">
+
+            <div class="buttonWrapper">
+                <div class="btn-group" role="group" aria-label="Display Options">
+                    <button type="button" class="btn btn-display" onclick="displayMembers()">Members</button>
+                    <button type="button" class="btn btn-display" onclick="displayEmployees()">Employees</button>
+                </div>
+            </div> 
+            
+            
+
+
+
+            <div class="searchWrapper">
+                <div class="search-bar">
+                    <form class="search-form" asp-controller="Resource" asp-action="Index" method="get">
+                        <div class="search-container">
+                            <input type="text" id="searchInput" onkeyup="search()" placeholder="  Search..." class="search-input">
+                            <button type="submit" class="search-button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+            <!-- Hidden modal -->
+            <div id="memberModal" class="modal">
+                <div class="modal-content">
+                    <!-- Member details will be shown here -->
+                    <span class="close">&times;</span>
+                    <p><strong id="memberName"></strong></p>
+                    <p id="memberEmail"></p>
+                    <!-- Add more member details here as needed -->
+                </div>
+            </div>
+
+            <div class="resultWrapper">
+                <ul id="memberList" class="member-list">
+
+                    @foreach (var member in ViewBag.AllMembers)
+                    {
+                        <li class="member-item" onclick="filterEmails('@member.MemberEmail')">
+                            <div class="member-info">
+                                <div class="member-list-left">
+                                    <p><strong>@member.MemberFirstName @member.MemberLastName</strong></p>
+                                </div>
+                                <div class="member-list-right">
+                                    <p>@member.MemberEmail</p>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+
+
+                <ul id="employeeList" class="member-list">
+
+                    @foreach (var employee in ViewBag.AllEmployees)
+                    {
+                        <li class="member-item" onclick="filterEmails('@employee.Email')">
+                            <div class="member-info">
+                                <div class="member-list-left">
+                                    <p><strong>@employee.FirstName @employee.LastName</strong></p>
+                                </div>
+                                <div class="member-list-right">
+                                    <p>@employee.Email</p>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="middleBody-Right">
+            <div class="middleBody-Right-Upper">
+
+            </div>
+
+             <div class="middleBody-Right-Inner" id="memberDetails">
+                
+                <form asp-controller="Emails" asp-action="SendEmail" method="post">
+                    <div class="">
+                        <label asp-for="ReceiverId">Receiver:</label>
+                        <input asp-for="ReceiverId" class="form-control" id="emailAddress" required />
+                        <span asp-validation-for="ReceiverId" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Subject">Subject:</label>
+                        <input asp-for="Subject" class="form-control" required />
+                        <span asp-validation-for="Subject" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Content">Content:</label>
+                        <textarea asp-for="Content" class="form-control" rows="4" required></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <input type="submit" value="Send Email" class="btn btn-primary" />
+                    </div>
+                </form>
+
+            </div>
+
+        </div> 
+
+    </div>
+
+</div>
+
+<script>
+    function search() {
+        // Declare variables
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("memberList");
+        li = ul.getElementsByTagName('li');
+
+        // Loop through all list items, and hide those who don't match the search query
+        for (i = 0; i < li.length; i++) {
+            txtValue = li[i].textContent || li[i].innerText;
+            if (txtValue.toUpperCase().startsWith(filter)) { // Check if the text starts with the filter
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+
+        // Repeat the same process for the employee list
+        ul = document.getElementById("employeeList");
+        li = ul.getElementsByTagName('li');
+
+        for (i = 0; i < li.length; i++) {
+            txtValue = li[i].textContent || li[i].innerText;
+            if (txtValue.toUpperCase().startsWith(filter)) { // Check if the text starts with the filter
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+
+    function displayMembers() {
+        document.getElementById("employeeList").style.display = "none";
+        document.getElementById("memberList").style.display = "block";
+    }
+
+    function displayEmployees() {
+        document.getElementById("memberList").style.display = "none";
+        document.getElementById("employeeList").style.display = "block";
+    }
+
+
+    function showMemberDetails(firstName, lastName, email) {
+        // Get the member details div
+        var memberDetailsDiv = document.getElementById('memberDetails');
+
+        // Clear existing content
+        memberDetailsDiv.innerHTML = '';
+
+        // Create new content with member details
+        var memberDetailsHTML = '<p><strong>' + firstName + ' ' + lastName + '</strong></p>';
+        memberDetailsHTML += '<p>Email: ' + email + '</p>';
+
+        // Set content in the div
+        memberDetailsDiv.innerHTML = memberDetailsHTML;
+    }
+
+    function showMemberEmails(memberEmail) {
+        // AJAX request to retrieve emails sent to the member
+        $.ajax({
+            url: '/Emails/SentEmails',
+            type: 'GET',
+            data: { email: memberEmail },
+            success: function (data) {
+                // Update the memberEmails div with the retrieved emails
+                $('#memberEmails').html(data);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error retrieving emails:', error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('.view-sent-emails-btn').click(function () {
+            var email = $(this).data('email');
+            $.get('/Emails/SentEmails?email=' + email, function (data) {
+                $('.middleBody-Right-Inner').html(data);
+            });
+        });
+    });
+
+
+    function filterEmails(emailAddress, element) {
+        // Remove the 'selected' class from all list items
+        var listItems = document.querySelectorAll('.member-item');
+        listItems.forEach(function (item) {
+            item.classList.remove('selected');
+        });
+
+        // Add the 'selected' class to the clicked list item
+        element.classList.add('selected');
+
+        // Set the email address in the form field
+        document.getElementById("emailAddress").value = emailAddress;
+
+        // Submit the form
+        document.getElementById("emailFilterForm").submit();
+    }
+
+    function filterEmails(emailAddress) {
+        document.getElementById("emailAddress").value = emailAddress; // Set the email address in the form field
+        document.getElementById("emailFilterForm").submit(); // Submit the form
+    }
+
+</script>

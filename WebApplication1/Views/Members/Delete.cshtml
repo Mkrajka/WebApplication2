@@ -1,0 +1,117 @@
+﻿@model WebApplication1.Models.Member
+
+@{
+    Layout = "/Pages/_Layout.cshtml";
+}
+@* <h2>Delete Member</h2> *@
+
+<style>
+    .memberBody {
+        width: 100%;
+        padding: 20px;
+        height: 100%;
+        /* background-color: #FAFAFA; */
+    }
+
+    .upperBody {
+        height: 10%;
+        width: 100%;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        padding-top: 18px;
+    }
+
+    .middleBody {
+        height: 80%;
+        padding-top: 18px;
+        border-radius: 7px;
+    }
+
+    .middleBodyEdit {
+        width: 100%;
+        border-radius: 7px;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        padding-top: 18px;
+    }
+
+    .inputBox {
+        padding: 10px 20px;
+    }
+
+    .inputBox label {
+        font-weight: bold;
+    }
+
+
+    .edit-Button {
+        background-color: #304D70;
+        color: white;
+        padding: 6px 18px;
+        border-radius: 5px;
+        transition: transform 0.3s ease;
+        border: none;
+        text-decoration: none;
+    }
+
+        .edit-Button:hover {
+            transition: 0.5s;
+            transform: scale(1.1);
+            color: white;
+        }
+
+    .cancelBTN {
+        text-decoration: none;
+        color: white;
+    }
+
+        .cancelBTN:hover {
+            text-decoration: none;
+            color: white;
+        }
+
+</style>
+
+
+<div class="memberBody">
+    <div class="upperBody">
+        <h4><b>Members</b></h4>
+    </div>
+
+
+    <div class="middleBody">
+        <div class="middleBodyEdit">
+
+            <div class="inputBox">
+
+                <h3>Are you sure you want to delete this member?</h3>
+            </div>
+            <form asp-action="Delete" method="post">
+                <div class="inputBox">
+                    <div class="form-group">
+                        <input type="hidden" asp-for="MemberID" />
+                        <label asp-for="MemberFirstName" class="control-label"></label>
+                        <p>@Model.MemberFirstName</p>
+                    </div>
+                </div>
+
+                <div class="inputBox">
+                    <div class="form-group">
+                        <label asp-for="MemberLastName" class="control-label"></label>
+                        <p>@Model.MemberLastName</p>
+                    </div>
+                </div>
+
+                <div class="inputBox">
+                    <div class="form-group">
+                        <button type="submit" class="edit-Button">Delete</button>
+                        <button class="edit-Button"> <a asp-action="Index" class="cancelBTN">Cancel</a></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

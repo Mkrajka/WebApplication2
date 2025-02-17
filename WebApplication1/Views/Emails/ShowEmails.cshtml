@@ -1,0 +1,24 @@
+﻿@model List<Email>
+
+<!-- Display received emails on the left side and sent emails on the right side -->
+<div>
+    <h2>Emails</h2>
+    <div>
+        <h3>Received Emails</h3>
+        <ul>
+            @foreach (var email in Model.Where(e => e.ReceiverId == ViewBag.EmailAddress).OrderByDescending(e => e.Timestamp))
+            {
+                <li>@email.Content</li>
+            }
+        </ul>
+    </div>
+    <div>
+        <h3>Sent Emails</h3>
+        <ul>
+            @foreach (var email in Model.Where(e => e.SenderId == ViewBag.EmailAddress).OrderByDescending(e => e.Timestamp))
+            {
+                <li>@email.Content</li>
+            }
+        </ul>
+    </div>
+</div>

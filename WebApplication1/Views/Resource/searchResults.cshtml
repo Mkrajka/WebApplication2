@@ -1,0 +1,82 @@
+﻿@model List<Resource>
+
+
+    <style>
+    /* CSS for table */
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table tr {
+        height: 80px; /* Increase the height of each row */
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white; /* Set background color to white */
+    }
+
+        table th, table td {
+            padding: 12px; /* Increase padding to increase row height */
+            border-bottom: 1px solid #ddd; /* Add border only at the bottom */
+        }
+
+    /* CSS for select option to choose number of rows */
+    .rows-select {
+        margin-bottom: 10px;
+    }
+
+    /* CSS for search results */
+    #search-results {
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 5px;
+        height: 100%;
+        border-radius: 5px;
+        border: none;
+    }
+
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Item Name</th>
+            <th>Item Type</th>
+            <th>Item Quantity</th>
+            <th>Purchased Date</th>
+            <th>Item Price</th>
+            @* <th>Item Notes</th> *@
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var resource in Model)
+            {
+                <tr>
+                    <td>@resource.ResourceID</td>
+                    <td>@resource.ItemName</td>
+                    <td>@resource.ItemType</td>
+                    <td>@resource.ItemQuantity</td>
+                    <td>@resource.PurchasedDate.ToString("yyyy-MM-dd")</td>
+                    <td>@resource.ItemPrice</td>
+
+                    <td>
+                        <a asp-controller="Resource" asp-action="Edit" asp-route-id="@resource.ResourceID">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@resource.ResourceID">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">No resource found</td>
+            </tr>
+        }
+    </tbody>
+</table>

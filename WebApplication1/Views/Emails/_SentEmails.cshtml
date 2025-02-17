@@ -1,0 +1,12 @@
+﻿@{
+    var sentEmails = ViewBag.SentEmails as List<WebApplication1.Models.Email>;
+}
+
+@foreach (var email in sentEmails)
+{
+    <div>
+        <p><strong>Subject:</strong> @email.Subject</p>
+        <p><strong>Content:</strong> @email.Content</p>
+        <hr />
+    </div>
+}

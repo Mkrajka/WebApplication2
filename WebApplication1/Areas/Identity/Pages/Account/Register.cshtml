@@ -1,0 +1,49 @@
+﻿@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "/Areas/Identity/Pages/_WebLayout.cshtml";
+}
+
+<form id="registerForm" method="post">
+    <h2><b>Sign Up</b></h2>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-6">
+            <div class="form-floating">
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="firstname" aria-required="true" />
+                <label asp-for="Input.FirstName">First Name</label>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-floating">
+                <input asp-for="Input.LastName" class="form-control" autocomplete="lastname" aria-required="true" />
+                <label asp-for="Input.LastName">Last Name</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-floating">
+        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+        <label asp-for="Input.Email"></label>
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+    <div class="form-floating">
+        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+        <label asp-for="Input.Password"></label>
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+    </div>
+    <div class="form-floating">
+        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+        <label asp-for="Input.ConfirmPassword"></label>
+        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <button id="registerSubmit" type="submit" class="login-Button"><b>Register</b></button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

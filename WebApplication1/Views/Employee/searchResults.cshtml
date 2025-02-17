@@ -1,0 +1,83 @@
+﻿@model List<Employee>
+
+
+<style>
+    /* CSS for table */
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table tr {
+        height: 80px; /* Increase the height of each row */
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white; /* Set background color to white */
+    }
+
+        table th, table td {
+            padding: 12px; /* Increase padding to increase row height */
+            border-bottom: 1px solid #ddd; /* Add border only at the bottom */
+        }
+
+    /* CSS for select option to choose number of rows */
+    .rows-select {
+        margin-bottom: 10px;
+    }
+
+    /* CSS for search results */
+    #search-results {
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 5px;
+        height: 100%;
+        border-radius: 5px;
+        border: none;
+    }
+
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>DateOfBirth</th>
+            <th>Gender</th>
+            <th>Address</th>
+            <th>PhoneNumber</th>
+            @* <th>Email</th> *@
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var employee in Model)
+            {
+                <tr>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                    <td>@employee.Gender</td>
+                    <td>@employee.Address</td>
+                    <td>@employee.PhoneNumber</td>
+                    @* <td>@employee.Email</td> *@
+                    <td>
+                        <a asp-controller="Employee" asp-action="Edit" asp-route-id="@employee.EmployeeID">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@employee.EmployeeID">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">No employees found</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,460 @@
+﻿@model IEnumerable<WebApplication1.Models.Classes>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "/Pages/_Layout.cshtml";
+}
+
+
+<style>
+    .memberBody {
+        width: 100%;
+        padding: 20px;
+        height: 100%;
+        background-color: #FAFAFA;
+    }
+
+    .upperBody {
+        height: 10%;
+        width: 100%;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        padding-top: 18px;
+    }
+
+    .middleBody {
+        /* display: flex; */
+        padding-top: 20px;
+        height: 80%;
+        width: 100%;
+    }
+
+
+
+    .searchBar {
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+        background-color: white;
+        height: 16%;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-bar {
+        width: 80%;
+        padding-left: 20px;
+        padding-right: 50px;
+    }
+
+    .search-btn {
+        width: 20%;
+        text-align: center;
+    }
+
+        .search-btn button {
+            background-color: #304D70;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+            border: none;
+        }
+
+            .search-btn button:hover {
+                transition: 0.5s;
+                transform: scale(1.1);
+            }
+
+
+
+
+
+
+
+    .search-container {
+        position: relative;
+        display: flex;
+    }
+
+    .search-input {
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        height: 40px;
+    }
+
+    .search-button {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        margin-left: -30px;
+    }
+
+        .search-button i {
+            font-size: 18px;
+            color: #888;
+        }
+
+
+
+
+
+    /* Styling for the pop-up container */
+    .popup-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 60%;
+        height: 92%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        border-radius: 7px;
+    }
+
+    /* Styling for the pop-up form */
+    .popup-form {
+        /* Add your form styling here */
+    }
+
+    /* Styling for the overlay/background behind the pop-up */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .middleBottom {
+        overflow: auto;
+        height: 30%;
+        margin: 15px;
+        margin-top: -40px;
+        border-radius: 7px;
+        background-color: red;
+        z-index: 2; /* Set a higher z-index to bring it to the front */
+    }
+
+    .middleMiddle {
+        position: relative; /* Make sure position is set to relative or absolute */
+        z-index: 1; /* Set a lower z-index compared to .middleBottom */
+    }
+
+
+    .middle-table {
+        padding-top: 20px;
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    .middle-table-bottom {
+        /* background-color: white; */
+        height: 92%;
+        border-radius: 5px;
+        /* box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05); */
+    }
+
+
+    .middleBody-Left {
+        /* background-color: yellow; */
+        width: 100%;
+        height: 100%;
+        /* padding-top: 80px; */
+    }
+
+
+
+
+
+    .inputBox {
+        padding: 10px 20px;
+    }
+
+
+
+
+    .edit-Button {
+        background-color: #304D70;
+        color: white;
+        padding: 6px 18px;
+        border-radius: 5px;
+        transition: transform 0.3s ease;
+        border: none;
+        text-decoration: none;
+    }
+
+        .edit-Button:hover {
+            transition: 0.5s;
+            transform: scale(1.1);
+            color: white;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+    .middle-table-bottom a {
+        background-color: #304D70;
+        color: white;
+        padding: 5px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: 0.5s;
+    }
+
+        .middle-table-bottom a:hover {
+            transition: 0.5s;
+            /* transform: scale(1.1); */
+            box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
+        }
+
+
+
+
+
+    /* Hide the first column in the search results table */
+    #search-results table th:first-child,
+    #search-results table td:first-child {
+        display: none;
+    }
+
+    /* Style the scrollbar */
+    #search-results {
+        /* overflow-y: scroll; /* Ensure vertical scrollbar is visible */ 
+        /* scrollbar-width: thin;  */
+        scrollbar-color: #304D70 transparent;
+        scrollbar-radius: 7px;
+    }
+
+    
+    select[multiple] option:checked,
+    select[multiple] option:hover,
+    select[multiple] option::selection
+    {
+        background-color: #304D70; /* Change the background color of selected items */
+        color: white; /* Change the text color of selected items to white */
+    } 
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+    
+
+
+    
+
+</style>
+
+
+<div class="memberBody">
+    <div class="upperBody">
+        <h4><b>Classes</b></h4>
+    </div>
+
+
+    <div class="middleBody">
+
+        <div class="middleBody-Left">
+
+            <!--Search Bar-->
+            <div class="searchBar">
+                <div class="search-bar">
+                    <form class="search-form" asp-controller="Classes" asp-action="Index" method="get">
+                        <div class="search-container">
+                            <input type="text" name="search" id="search" placeholder="  Search..." class="search-input">
+                            <button type="submit" class="search-button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="search-btn">
+                    <button id="openPopupButton">Add Class</button>
+                </div>
+            </div> 
+
+
+
+
+            <div class="middle-table">
+
+                <div class="middle-table-bottom">
+                    <!-- Hidden pop-up form -->
+                    <div id="popupFormContainer" class="popup-container">
+                        <form method="post" asp-controller="Classes" asp-action="AddClass" class="popup-form">
+
+                            <!-- Member information fields -->
+                            <div class="inputBox">
+
+                                <label for="ClassName" class="control-label">Class Name</label>
+                                <input type="text" id="ClassName" class="form-control" name="ClassName" required>
+                            </div>
+
+                            <div class="inputBox">
+                                <label for="Description" class="control-label">Description</label>
+                                <input type="text" id="Description" class="form-control" name="Description" required>
+                            </div>
+
+
+                            <div class="inputBox">
+                                <label for="Date" class="control-label">Date</label>
+                                <input type="date" id="Date" class="form-control" name="Date" required>
+
+                            </div>
+
+                            <div class="inputBox">
+                                <label for="Duration" class="control-label">Duration</label>
+                                <input type="time" id="Duration" class="form-control" name="Duration" required>
+                            </div>
+
+                            <div class="inputBox">
+                                <label for="MemberIDs" class="control-label">Select Members</label>
+                                <select id="MemberIDs" class="form-control" name="MemberIDs" multiple>
+                                    @foreach (var member in ViewBag.MemberList)
+                                    {
+                                        <option value="@member.MemberID">@member.MemberFirstName @member.MemberLastName</option>
+                                    }
+                                </select>
+                            </div>
+
+                            
+
+                            <div class="inputBox">
+                                <label for="EmployeeIDs" class="control-label">Select Members</label>
+                                <select id="EmployeeIDs" class="form-control" name="EmployeeIDs" multiple>
+                                    @foreach (var employee in ViewBag.EmployeeList)
+                                    {
+                                        <option value="@employee.EmployeeID">@employee.FirstName  @employee.LastName</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="inputBox">
+                                <button type="submit" class="edit-Button">Add Class</button>
+                                <button type="button" id="cancelButton" class="edit-Button">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <div id="search-results">
+                        <!-- Display search results here -->
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get references to the button, pop-up container, and overlay
+        const openPopupButton = document.getElementById("openPopupButton");
+        const popupFormContainer = document.getElementById("popupFormContainer");
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+
+        // Function to open the pop-up
+        function openPopup() {
+            popupFormContainer.style.display = "block";
+            document.body.appendChild(overlay);
+        }
+
+        // Function to close the pop-up
+        function closePopup() {
+            popupFormContainer.style.display = "none";
+            overlay.remove();
+        }
+
+        // Event listener for the button click
+        openPopupButton.addEventListener("click", openPopup);
+
+        // Event listener for the overlay click (to close the pop-up)
+        overlay.addEventListener("click", closePopup);
+    });
+
+
+
+
+
+
+    // Attach an event listener to the search input field
+    document.getElementById('search').addEventListener('input', function () {
+        // Get the value entered in the search input field
+        var searchQuery = this.value;
+
+        // Make an AJAX request to the server to fetch search results
+        fetch('/Classes/Search?search=' + encodeURIComponent(searchQuery))
+            .then(response => response.text())
+            .then(html => {
+                // Update the search results container with the fetched results
+                document.getElementById('search-results').innerHTML = html;
+            })
+            .catch(error => console.error('Error fetching search results:', error));
+    });
+
+    // Trigger an initial search when the page loads to show all members
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/Classes/Search')
+            .then(response => response.text())
+            .then(html => {
+                // Update the search results container with the fetched results
+                document.getElementById('search-results').innerHTML = html;
+            })
+            .catch(error => console.error('Error fetching search results:', error));
+    });
+
+
+
+
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const cancelButton = document.getElementById("cancelButton");
+        const popupFormContainer = document.getElementById("popupFormContainer");
+
+        // Function to close the pop-up
+        function closePopup() {
+            popupFormContainer.style.display = "none";
+        }
+
+        // Event listener for the cancel button click
+        cancelButton.addEventListener("click", closePopup);
+    });
+</script>

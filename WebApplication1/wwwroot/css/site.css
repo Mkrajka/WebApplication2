@@ -1,0 +1,40 @@
+html, body {
+    font-size: 14px;
+    height: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@keyframes move {
+    0%, 49.99% {
+        opacity: 0;
+        z-index: 1;
+    }
+
+    50%, 100% {
+        opacity: 1;
+        z-index: 5;
+    }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+.main-Content {
+    width: 100%;
+}
+
+.main-Title {
+    padding: 7px;
+    padding-bottom: 10px;
+}
+
+    .main-Title h3 {
+        font-size: 20px;
+        font-family: 'Sacramento', cursive;
+    }

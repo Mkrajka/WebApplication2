@@ -1,0 +1,1122 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using WebApplication1.Areas.Identity.Data;
+@using WebApplication1.Data;
+@model WebApplication1.Models.Member
+@inject UserManager<ApplicationUser> UserManager
+@inject WebDbContext dbContext
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "/Pages/_Layout.cshtml";
+
+
+    var currentUser = await UserManager.GetUserAsync(User);
+    string currentUserId = currentUser.Id;
+
+    int currentMemberId = Model.MemberID;
+
+    // Query to retrieve the most recent date for the current member
+    DateTime? mostRecentDate = dbContext.CalorieEntries
+        .Where(m => m.MemberID == currentMemberId && m.Member.MemberDateLeft != null)
+        .OrderByDescending(m => m.Date)
+        .Select(m => m.Date)
+        .FirstOrDefault();
+
+    // Query to retrieve the breakfast calories associated with the most recent date
+    int? breakfastCalories = dbContext.CalorieEntries
+        .Where(m => m.MemberID == currentMemberId)
+        .Select(m => m.BreakfastCalories)
+        .FirstOrDefault();
+
+
+    int? LunchCalories = dbContext.CalorieEntries
+        .Where(m => m.MemberID == currentMemberId)
+        .Select(m => m.LunchCalories)
+        .FirstOrDefault();
+
+    int? DinnerCalories = dbContext.CalorieEntries
+    .Where(m => m.MemberID == currentMemberId)
+    .Select(m => m.DinnerCalories)
+    .FirstOrDefault();
+
+    int? SnackCalories = dbContext.CalorieEntries
+    .Where(m => m.MemberID == currentMemberId)
+    .Select(m => m.SnackCalories)
+    .FirstOrDefault();
+
+
+    // Retrieve all weight entries for the current member
+    var weightEntries = dbContext.WeightEntries
+        .Where(w => w.MemberID == currentMemberId)
+        .Select(m => m.Weight)
+        .ToList();
+
+
+    var weightEntriesLabel = dbContext.WeightEntries
+    .Where(w => w.MemberID == currentMemberId)
+    .Select(w => w.Date)
+    .ToList();
+
+
+    int? totalCalories = breakfastCalories + LunchCalories + DinnerCalories + SnackCalories;
+
+    var latestWeightEntry = dbContext.WeightEntries
+    .Where(w => w.MemberID == currentMemberId)
+    .OrderByDescending(w => w.Date)
+    .FirstOrDefault();
+
+}
+
+
+
+<style>
+    .middleBody {
+        display: flex;
+        padding-top: 20px;
+        height: 80%;
+        width: 100%;
+    }
+
+    .memberBody {
+        width: 100%;
+        padding: 20px;
+        height: 100%;
+        background-color: #FAFAFA;
+    }
+
+    .upperBody {
+        height: 10%;
+        width: 100%;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        padding-top: 18px;
+    }
+
+    .middleBody-Left {
+        /* background-color: yellow; */
+        width: 70%;
+        height: 100%;
+        /* padding-top: 80px; */
+    }
+
+    .middleBody-Right {
+        width: 30%;
+    }
+
+    .searchBar {
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+        background-color: white;
+        height: 16%;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-bar {
+        width: 70%;
+        padding-left: 20px;
+        padding-right: 50px;
+    }
+
+    .search-btn {
+        width: 30%;
+        text-align: center;
+    }
+
+        .search-btn button {
+            background-color: #304D70;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+            border: none;
+        }
+
+            .search-btn button:hover {
+                transition: 0.5s;
+                transform: scale(1.1);
+            }
+
+
+    .search-container {
+        position: relative;
+        display: flex;
+    }
+
+    .search-input {
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        height: 40px;
+    }
+
+    .search-button {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        margin-left: -30px;
+    }
+
+        .search-button i {
+            font-size: 18px;
+            color: #888;
+        }
+
+
+    .middle-table {
+        padding-top: 20px;
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    .middle-table-bottom {
+        background-color: white;
+        height: 92%;
+        border-radius: 5px;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    }
+
+
+    /* CSS for table */
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table tr {
+        height: 80px; /* Increase the height of each row */
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white; /* Set background color to white */
+    }
+
+        table th, table td {
+            padding: 12px; /* Increase padding to increase row height */
+            border-bottom: 1px solid #ddd; /* Add border only at the bottom */
+        }
+
+    /* CSS for select option to choose number of rows */
+    .rows-select {
+        margin-bottom: 10px;
+    }
+
+    /* CSS for search results */
+    #search-results {
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 5px;
+        height: 100%;
+        border-radius: 5px;
+        border: none;
+    }
+
+
+    .middle-table-bottom a {
+        background-color: #304D70;
+        color: white;
+        padding: 5px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: 0.5s;
+    }
+
+        .middle-table-bottom a:hover {
+            transition: 0.5s;
+            /* transform: scale(1.1); */
+            box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
+        }
+
+
+
+
+
+    /* Hide the first column in the search results table */
+    #search-results table th:first-child,
+    #search-results table td:first-child {
+        display: none;
+    }
+
+    /* Style the scrollbar */
+    #search-results {
+        overflow-y: scroll; /* Ensure vertical scrollbar is visible */
+        scrollbar-width: thin; /* Set the width of the scrollbar */
+        scrollbar-color: #304D70 transparent;
+        scrollbar-radius: 7px;
+    }
+
+
+    /* Styling for the pop-up container */
+    .popup-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 60%;
+        height: 80%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        border-radius: 7px;
+    }
+
+    /* Styling for the pop-up form */
+    .popup-form {
+        /* Add your form styling here */
+    }
+
+    /* Styling for the overlay/background behind the pop-up */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .middleBottom {
+        overflow: auto;
+        height: 30%;
+        margin: 15px;
+        margin-top: -40px;
+        border-radius: 7px;
+        background-color: red;
+        z-index: 2; /* Set a higher z-index to bring it to the front */
+    }
+
+    .middleMiddle {
+        position: relative; /* Make sure position is set to relative or absolute */
+        z-index: 1; /* Set a lower z-index compared to .middleBottom */
+    }
+
+
+    .inputBox {
+        padding: 10px 20px;
+    }
+
+    .edit-Button {
+        background-color: #304D70;
+        color: white;
+        padding: 6px 18px;
+        border-radius: 5px;
+        transition: transform 0.3s ease;
+        border: none;
+        text-decoration: none;
+    }
+
+        .edit-Button:hover {
+            transition: 0.5s;
+            transform: scale(1.1);
+            color: white;
+        }
+
+    .upper-info-class {
+        height: 78%;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+    }
+
+    .under-info-class {
+        height: 28%;
+        /*background-color: yellow;*/
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+
+    .firstBox {
+        width: 49%;
+        border-radius: 6px;
+        height: 100%;
+        padding-top: 35px;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .firstBox-Upper {
+        height: 50%;
+        width: 100%;
+        display: flex;
+    }
+
+    .firstBox-Lower {
+        height: 50%;
+        width: 100%;
+        display: flex;
+    }
+
+
+
+    .inputBoxHeader p {
+        margin: 0;
+    }
+
+
+    .inputBoxContent {
+        background-color: #ECECEC;
+        border-radius: 5px;
+        padding-top: 15px;
+        padding: 15px;
+    }
+
+        .inputBoxContent p {
+            margin: 0;
+            color: black;
+        }
+
+        .inputBoxContent a {
+            color: black;
+            text-decoration: none;
+        }
+
+
+    .inputBoxButton {
+        width: 100%;
+        /* background-color: yellow; */
+    }
+
+
+    .back-icon {
+        color: black /* Set the color to black */
+    }
+
+    .inputBoxButton {
+        height: 30px;
+        padding: 5px 0px;
+        display: flex;
+    }
+
+    .inputLeft {
+        width: 50%;
+        text-align: left;
+    }
+
+    .inputRight {
+        width: 50%;
+        text-align: right;
+    }
+
+        .inputRight a {
+            text-decoration: none;
+            color: black;
+        }
+
+    .middleBody-Right {
+        height: 108%;
+        padding-left: 20px;
+    }
+
+    .middleBody-Body {
+        height: 100%;
+        border-radius: 7px;
+        background-color: #304D70;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .progress-container {
+        width: 100%;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .progress-bar {
+        width: 0%;
+        height: 20px;
+        background-color: #4caf50;
+        border-radius: 5px;
+        text-align: center;
+        line-height: 30px;
+        color: white;
+    }
+
+    .middleBody-Upper {
+        padding-top: 35px;
+        padding-left: 20px;
+        color: white;
+        height: 15%;
+    }
+
+        .middleBody-Upper p {
+            padding-left: 2px;
+            margin-top: -10px;
+        }
+
+    .middleBody-Middle {
+        height: 60%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .middleBody-Middle img {
+            padding-top: 50px;
+            width: 90%;
+        }
+
+
+
+    /*Donut Chart*/
+    .middleBody-Body-Upper {
+        height: 65%;
+        border-radius: 5px;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    }
+
+        .middleBody-Body-Upper p {
+            padding-left: 30px;
+            font-size: 18px;
+        }
+
+        .middleBody-Body-Upper canvas {
+            margin-top: -60px;
+        }
+
+    .upper-flex {
+        display: flex;
+        padding-top: 18px;
+        padding-right: 25px;
+    }
+
+    .upper-flex-left {
+        width: 50%;
+        text-align: left;
+        align-items: center;
+        /* background-color: blue; */
+    }
+
+    .upper-flex-right {
+        width: 50%;
+        text-align: right;
+        align-items: center;
+    }
+
+    /* Styling for the pop-up container */
+    .popup-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 60%;
+        height: 65%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        border-radius: 7px;
+    }
+
+    /* Styling for the pop-up form */
+    .popup-form {
+        /* Add your form styling here */
+    }
+
+    /* Styling for the overlay/background behind the pop-up */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .BTN {
+        color: white;
+        background-color: #304D70;
+        border: none;
+        width: 100%;
+        border-radius: 5px;
+        height: 10%;
+        transition: 0.5s;
+    }
+
+        .BTN:hover {
+            color: white;
+            transition: 0.5s;
+            transform: scale(1.04);
+        }
+
+    .imageContent img {
+        width: 40%;
+    }
+
+
+
+    .under-info-class-Bottom {
+        height: 8%;
+        background-color: red;
+        border-radius: 5px;
+        padding: 0px;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    }
+
+        .under-info-class-Bottom form {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+        }
+
+        .under-info-class-Bottom button {
+            width: 100%;
+            height: 100%;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            background-color: #304D70;
+            transition: 0.5s;
+        }
+
+            .under-info-class-Bottom button:hover {
+                transition: 0.5s;
+                transform: scale(1.03);
+            }
+
+    .middleBody-Body-Low {
+        height: 41%;
+        padding-top: 15%;
+    }
+
+    .middleBody-Body-Low-Graph {
+        border-radius: 5px;
+        height: 100%;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    }
+
+        .middleBody-Body-Low-Graph p {
+            padding-left: 30px;
+            font-size: 18px;
+        }
+
+
+    /* Styling for the pop-up container */
+    .popup-container-Weight {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 60%;
+        height: 65%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        border-radius: 7px;
+    }
+
+    /* Styling for the pop-up form */
+    .popup-form {
+        /* Add your form styling here */
+    }
+
+    /* Styling for the overlay/background behind the pop-up */
+    .overlay-Weight {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+
+    .upper-flex-right {
+        /* background-color: red; */
+    }
+
+    .BTNWeight {
+        background-color: #304D70;
+        color: black;
+        height: 80%;
+        border: none;
+        transition: 0.5s;
+        /* padding: 5px 15px; */
+        padding: 5px 11px;
+        border-radius: 50px;
+        color: white;
+    }
+
+        .BTNWeight:hover {
+            transition: 0.5s;
+            transform: scale(1.05);
+        }
+
+    #lineChart {
+        border-radius: 5px;
+    }
+</style>
+
+
+
+
+<div class="memberBody">
+    <div class="upperBody">
+        <h4><b> @Html.DisplayFor(model => model.MemberFirstName) @Html.DisplayFor(model => model.MemberLastName)</b></h4>
+    </div>
+
+
+    <div class="middleBody">
+        <div class="middleBody-Left">
+
+
+            <div class="upper-info-class">
+
+                @*
+                <div class="inputBox">
+                <a href="#" onclick="history.go(-1); return false;"><i class="fas fa-angle-left back-icon"></i></a>
+                </div>
+                *@
+
+                <div class="inputBox">
+                    <div class="inputBoxButton">
+
+                        <div class="inputLeft">
+                            <a href="#" onclick="history.go(-1); return false;"><i class="fas fa-angle-left back-icon"></i></a>
+                        </div>
+
+                        <div class="inputRight">
+                            <a asp-action="Edit" asp-route-id="@Model?.MemberID"><i class="fas fa-pen-alt"></i></a>
+                            /
+                            <a asp-action="Delete" asp-route-id="@Model?.MemberID"><i class="fas fa-trash-alt"></i></a>
+                        </div>
+
+                    </div>
+
+
+                    <div class="inputBoxHeader">
+                        <p><strong>Name</strong></p>
+                    </div>
+
+                    <div class="inputBoxContent">
+                        <p>@Html.DisplayFor(model => model.MemberFirstName) @Html.DisplayFor(model => model.MemberLastName)</p>
+                    </div>
+                </div>
+
+                <div class="inputBox">
+                    <div class="inputBoxHeader">
+                        <p>
+                            <strong>
+                                Email
+                            </strong>
+                        </p>
+                    </div>
+
+                    <div class="inputBoxContent">
+                        <p>
+                            @Html.DisplayFor(model => model.MemberEmail)
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="inputBox">
+                    <div class="inputBoxHeader">
+                        <p>
+                            <strong>
+                                PhoneNumber
+                            </strong>
+                        </p>
+                    </div>
+
+                    <div class="inputBoxContent">
+                        <p>
+                            @Html.DisplayFor(model => model.MemberPhoneNumber)
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="inputBox">
+                    <div class="inputBoxHeader">
+                        <p>
+                            <strong>
+                                Date Joined
+                            </strong>
+                        </p>
+                    </div>
+
+                    <div class="inputBoxContent">
+                        <p>
+                            @Html.DisplayFor(model => model.MemberDateJoined)
+                        </p>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <div class="under-info-class">
+                <div class="firstBox">
+                    <div class="firstBox-Upper">
+                        <div class="imageContent">
+                            <img src="/images/Calories.png" />
+                        </div>
+                        <div class="textContent">
+                            <h2>@totalCalories</h2>
+                        </div>
+                        <div class="textContentDescription">
+                            <p>Daily</p>
+                        </div>
+                    </div>
+                    <div class="firstBox-Lower">
+                        <div class="textContentLower">
+                            <h4><b>Calories</b></h4>
+                        </div>
+                        <div class="textContentDescriptionLower">
+                            <p style="background-color:  rgba(255, 49, 49, 0.2); color:rgba(255, 49, 49, 1);"><b>Total</b></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="firstBox">
+                    <div class="firstBox-Upper">
+                        <div class="imageContent">
+                            <img src="/images/Weight.png" />
+                        </div>
+                        <div class="textContent">
+                            <h2>@(latestWeightEntry?.Weight ?? 0)</h2>
+                        </div>
+                        <div class="textContentDescription">
+                            <p>Kgs</p>
+                        </div>
+                    </div>
+                    <div class="firstBox-Lower">
+                        <div class="textContentLower">
+                            <h4><b>Weight</b></h4>
+                        </div>
+                        <div class="textContentDescriptionLower">
+                            <p style="background-color: rgba(61, 217, 235, 0.2); color: rgba(61, 217, 235, 1);"><b>Total</b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="under-info-class-Bottom">
+                <form action="@Url.Action("AddEntry", "Members")" method="post">
+                    <input type="hidden" name="memberId" value="@Model.MemberID" />
+                    <button type="submit"><strong>Add Entry</strong></button>
+                </form>
+            </div>
+        </div>
+
+        <div class="middleBody-Right">
+            <div class="middleBody-Body-Upper">
+                <div class="upper-flex">
+                    <div class="upper-flex-left">
+                        <p><strong>Calories</strong></p>
+                    </div>
+                    <div class="upper-flex-right">
+                    </div>
+                </div>
+                <canvas id="donutChart" width="300" height="300"></canvas>
+                <button id="openPopupButton" class="BTN">Add Calories</button>
+                <!-- Hidden pop-up form -->
+                <div id="popupFormContainer" class="popup-container">
+                    <form method="post" asp-controller="Members" asp-action="AddingCalories" class="popup-form">
+
+                        <!-- Calories information fields -->
+                        <div class="inputBox">
+                            <label for="BreakfastCalories" class="control-label">Breakfast Calories</label>
+                            <input type="text" id="BreakfastCalories" class="form-control" name="BreakfastCalories" required>
+                        </div>
+
+                        <div class="inputBox">
+                            <label for="LunchCalories" class="control-label">Lunch Calories</label>
+                            <input type="text" id="LunchCalories" class="form-control" name="LunchCalories" required>
+                        </div>
+
+                        <div class="inputBox">
+                            <label for="DinnerCalories" class="control-label">Dinner Calories</label>
+                            <input type="text" id="DinnerCalories" class="form-control" name="DinnerCalories" required>
+                        </div>
+
+                        <div class="inputBox">
+                            <label for="SnackCalories" class="control-label">Snack Calories</label>
+                            <input type="text" id="SnackCalories" class="form-control" name="SnackCalories" required>
+                        </div>
+
+                        <div class="inputBox">
+                            <input type="text" id="MemberID" class="form-control" name="MemberID" value="@Model.MemberID" required readonly>
+                        </div>
+
+
+                        <div class="inputBox">
+                            <button type="submit" class="edit-Button">Add Calories</button>
+                            <button type="button" id="cancelButton" class="edit-Button">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="middleBody-Body-Low">
+                <div class="middleBody-Body-Low-Graph">
+                    <div class="upper-flex">
+                        <div class="upper-flex-left">
+                            <p><strong>Weight</strong></p>
+                        </div>
+
+                        <div class="upper-flex-right">
+                            <button id="openPopupButtonWeight" class="BTNWeight">
+                                <i class="fas fa-plus"></i>
+                            </button>
+
+                            <div id="popupFormContainerWeight" class="popup-container-Weight">
+                                <form method="post" asp-controller="Members" asp-action="AddingWeight" class="popup-form">
+                                    <div class="inputBox">
+                                        <label for="Weight" class="control-label">Weight</label>
+                                        <input type="text" id="Weight" class="form-control" name="Weight" required>
+                                    </div>
+
+                                    <div class="inputBox">
+                                        <input type="text" id="MemberID" class="form-control" name="MemberID" value="@Model.MemberID" required readonly>
+                                    </div>
+
+                                    <div class="inputBox">
+                                        <button type="submit" class="edit-Button">Add Calories</button>
+                                        <button type="button" id="cancelButton" class="edit-Button">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <canvas id="lineChart" width="200" height="67"></canvas>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get references to the button, pop-up container, and overlay
+        const openPopupButton = document.getElementById("openPopupButton");
+        const popupFormContainer = document.getElementById("popupFormContainer");
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+
+        // Function to open the pop-up
+        function openPopup() {
+            popupFormContainer.style.display = "block";
+            document.body.appendChild(overlay);
+        }
+
+        // Function to close the pop-up
+        function closePopup() {
+            popupFormContainer.style.display = "none";
+            overlay.remove();
+        }
+
+        // Event listener for the button click
+        openPopupButton.addEventListener("click", openPopup);
+
+        // Event listener for the overlay click (to close the pop-up)
+        overlay.addEventListener("click", closePopup);
+    });
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get references to the button, pop-up container, and overlay
+        const openPopupButton = document.getElementById("openPopupButtonWeight");
+        const popupFormContainer = document.getElementById("popupFormContainerWeight");
+        const overlay = document.createElement("div");
+        overlay.className = "overlay-Weight";
+
+        // Function to open the pop-up
+        function openPopup() {
+            popupFormContainer.style.display = "block";
+            document.body.appendChild(overlay);
+        }
+
+        // Function to close the pop-up
+        function closePopup() {
+            popupFormContainer.style.display = "none";
+            overlay.remove();
+        }
+
+        // Event listener for the button click
+        openPopupButton.addEventListener("click", openPopup);
+
+        // Event listener for the overlay click (to close the pop-up)
+        overlay.addEventListener("click", closePopup);
+    });
+
+
+
+
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const cancelButton = document.getElementById("cancelButton");
+        const popupFormContainer = document.getElementById("popupFormContainer");
+
+        // Function to close the pop-up
+        function closePopup() {
+            popupFormContainer.style.display = "none";
+        }
+
+        // Event listener for the cancel button click
+        cancelButton.addEventListener("click", closePopup);
+    });
+
+
+
+    $(document).ready(function () {
+        var ctx = document.getElementById('donutChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Breakfast Calories', 'Lunch Calories', 'Dinner Calories', 'Snack Calories'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [@breakfastCalories, @LunchCalories, @DinnerCalories, @SnackCalories],
+                    backgroundColor: [
+                        '#31356E',
+                        '#2F5F98',
+                        '#2D8BBA',
+                        '#41B8D5',
+                    ],
+                    borderWidth: 1,
+                    hoverOffset: 10 // Space between the hovered slice and the chart
+                }]
+            },
+            options: {
+                cutoutPercentage: 60, // This is to make it a donut instead of a pie chart
+                responsive: true,
+                animation: {
+                    animateRotate: true,
+                    animateScale: true
+                },
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        fontSize: 14,
+                        fontColor: '#333',
+                        boxWidth: 20,
+                        padding: 20
+                    }
+                },
+                title: {
+                    display: true,
+                    fontSize: 20,
+                    fontColor: '#333',
+                    padding: 20
+                }
+            }
+        });
+    });
+
+
+    var weightEntries = @Html.Raw(Json.Serialize(weightEntries));
+    var weightEntriesLabel = @Html.Raw(Json.Serialize(weightEntriesLabel));
+
+    //backgroundColor: gradientLeaving,
+    const labels = weightEntriesLabel;
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Weight',
+            data: weightEntries,
+            borderColor: '#304D70',
+
+            borderWidth: 1,
+            pointRadius: 0,
+            tension: 0.4,
+            hoverRadius: 8,
+            hitRadius: 10,
+            fill: true
+        },]
+    };
+
+    // Configuration options
+    var options = {
+        scales: {
+            xAxes: [{
+                display: false,
+                gridLines: {
+                    display: false,
+                    color: "rgba(0, 0, 0, 0)",
+                },
+                border: {
+                    display: false
+                },
+            }],
+            yAxes: [{
+                display: false,
+                gridLines: {
+                    display: false,
+                    color: "rgba(0, 0, 0, 0)",
+                },
+                ticks: {
+                    display: false
+                },
+                grid: {
+                    display: false, // Set display to false to remove y-axis grid lines
+                },
+                border: {
+                    display: false
+                },
+            }],
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                enabled: true,
+                intersect: false,
+            }
+        },
+        interaction: {
+            mode: 'nearest',
+        },
+    };
+
+    // Get the canvas element
+    const ctx = document.getElementById('lineChart').getContext('2d');
+
+    // Create the line chart
+    const lineChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: options
+    });
+
+
+</script>

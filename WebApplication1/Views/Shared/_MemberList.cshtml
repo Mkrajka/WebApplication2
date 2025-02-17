@@ -1,0 +1,16 @@
+﻿@model IEnumerable<Member>
+
+@if (Model != null && Model.Any())
+{
+    <h3>Members</h3>
+    <ul>
+        @foreach (var member in Model)
+        {
+            <li>@member.MemberFirstName - @member.MemberEmail</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No members found.</p>
+}

@@ -1,0 +1,114 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using WebApplication1.Areas.Identity.Data;
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var currentController = ViewContext.RouteData.Values["controller"] as string;
+    var currentAction = ViewContext.RouteData.Values["action"] as string;
+
+    var currentUser = await UserManager.GetUserAsync(User);
+
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gym Management Web Application</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link href="https://fonts.cdnfonts.com/css/writing-signature" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+
+    <link rel="stylesheet" href="~/css/Views/dashboard.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Views/members.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Views/Pages/Layout.css" />
+</head>
+
+<body>
+    <div class="main-Background">
+        <div class="side-Bar">
+            <div class="image-Logo">
+                <img src="/images/logo.png" alt="Logo">
+            </div>
+
+            <ul class="list-Navigation">
+                <div class="sideBarHeadings">
+                    <p><b>HOME</b></p>
+                </div>
+
+                <li class="btn-style @(currentController == "Dashboard" && currentAction == "Index" ? "active" : "")">
+                    <img src="/images/dashboard.png" alt="Dashboard Icon" />
+                    <a href="/Dashboard/Index">Dashboard</a>
+                </li>
+
+                <li class="btn-style @(currentController == "Members" && currentAction == "Index" ? "active" : "")">
+                    <img src="/images/members.png" alt="Members Icon" />
+                    <a href="/Members/Index">Members</a>
+                </li>
+
+                <li class="btn-style @(currentController == "Resource" && currentAction == "Index" ? "active" : "")">
+                    <img src="/images/resource.png" alt="Resource Icon" />
+                    <a href="/Resource/Index">Resource</a>
+                </li>
+
+                <li class="btn-style @(currentController == "Employee" && currentAction == "Index" ? "active" : "")">
+                    <img src="/images/EmployeesIcon.png" alt="Employee Icon" />
+                    <a href="/Employee/Index">Employee</a>
+                </li>
+
+                <li class="btn-style @(currentController == "Classes" && currentAction == "Index" ? "active" : "")">
+                    <img src="/images/class.png" alt="Classes Icon" />
+                    <a href="/Classes/Index">Classes</a>
+                </li>
+
+                <li class="btn-style @(currentController == "Emails" && currentAction == "Index" ? "active" : "")">
+                    <img src="/images/chat.png" alt="Chat Icon" />
+                    <a href="/Emails/Index">Chat</a>
+                </li>
+            </ul>
+
+
+            <div class="logoutBox">
+                <div class="iconPerson">
+                    <img src="/images/members.png" alt="Settings Icon" />
+                </div>
+                <div class="detailsPerson">
+                    @if (currentUser != null)
+                    {
+                        <p><b>@currentUser.FirstName @currentUser.LastName</b></p>
+                    }
+                    <p>Owner</p>
+                </div>
+                <div class="buttonLogout">
+                    @{
+                        if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Home/LoginRegister" method="post">
+                                <button type="submit" class="nav-link btn btn-link text-dark circleBTN">
+                                    <i class="fas fa-power-off"></i>
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <p>You have successfully logged out of the application.</p>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="main-Content">
+            @RenderBody()
+        </div>
+    </div>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

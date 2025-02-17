@@ -1,0 +1,45 @@
+﻿@model List<Member>
+
+
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Date Joined</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var member in Model)
+            {
+                <tr>
+                    <td>@member.MemberID</td>
+                    <td>@member.MemberFirstName</td>
+                    <td>@member.MemberLastName</td>
+                    <td>@member.MemberEmail</td>
+                    <td>@member.MemberPhoneNumber</td>
+                    <td>@member.MemberDateJoined.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <a asp-controller="Members" asp-action="Edit" asp-route-id="@member.MemberID"><i class="fas fa-pen-alt"></i></a>
+                        /
+                        <a asp-action="Delete" asp-route-id="@member.MemberID"><i class="fas fa-trash-alt"></i></a>
+                        /
+                        <a asp-action="Details" asp-route-id="@member.MemberID"><i class="fas fa-eye"></i></a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">No members found</td>
+            </tr>
+        }
+    </tbody>
+</table>

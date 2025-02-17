@@ -1,0 +1,565 @@
+﻿@model IEnumerable<WebApplication1.Models.Employee>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "/Pages/_Layout.cshtml";
+}
+
+
+<style>
+    .memberBody {
+        width: 100%;
+        padding: 20px;
+        height: 100%;
+        background-color: #FAFAFA;
+    }
+
+    .upperBody {
+        height: 10%;
+        width: 100%;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: white;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        padding-top: 18px;
+    }
+
+    .middleBody {
+        display: flex;
+        padding-top: 20px;
+        height: 80%;
+        width: 100%;
+    }
+
+
+
+    .searchBar {
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+        background-color: white;
+        height: 16%;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-bar {
+        width: 70%;
+        padding-left: 20px;
+        padding-right: 50px;
+    }
+
+    .search-btn {
+        width: 30%;
+        text-align: center;
+    }
+
+        .search-btn button {
+            background-color: #304D70;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+            border: none;
+        }
+
+            .search-btn button:hover {
+                transition: 0.5s;
+                transform: scale(1.1);
+            }
+
+
+
+
+
+
+
+    .search-container {
+        position: relative;
+        display: flex;
+    }
+
+    .search-input {
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        height: 40px;
+    }
+
+    .search-button {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        margin-left: -30px;
+    }
+
+        .search-button i {
+            font-size: 18px;
+            color: #888;
+        }
+
+
+
+
+
+    /* Styling for the pop-up container */
+    .popup-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 60%;
+        height: 78%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        border-radius: 7px;
+    }
+
+    /* Styling for the pop-up form */
+    .popup-form {
+        /* Add your form styling here */
+    }
+
+    /* Styling for the overlay/background behind the pop-up */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .middleBottom {
+        overflow: auto;
+        height: 30%;
+        margin: 15px;
+        margin-top: -40px;
+        border-radius: 7px;
+        background-color: red;
+        z-index: 2; /* Set a higher z-index to bring it to the front */
+    }
+
+    .middleMiddle {
+        position: relative; /* Make sure position is set to relative or absolute */
+        z-index: 1; /* Set a lower z-index compared to .middleBottom */
+    }
+
+
+    .middle-table {
+        padding-top: 20px;
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    .middle-table-bottom {
+        background-color: white;
+        height: 92%;
+        border-radius: 5px;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .middleBody-Left {
+        /* background-color: yellow; */
+        width: 70%;
+        height: 100%;
+        /* padding-top: 80px; */
+    }
+
+
+
+
+
+    .inputBox {
+        padding: 10px 20px;
+    }
+
+
+
+
+    .edit-Button {
+        background-color: #304D70;
+        color: white;
+        padding: 6px 18px;
+        border-radius: 5px;
+        transition: transform 0.3s ease;
+        border: none;
+        text-decoration: none;
+    }
+
+        .edit-Button:hover {
+            transition: 0.5s;
+            transform: scale(1.1);
+            color: white;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+    .middle-table-bottom a {
+        background-color: #304D70;
+        color: white;
+        padding: 5px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: 0.5s;
+    }
+
+        .middle-table-bottom a:hover {
+            transition: 0.5s;
+            /* transform: scale(1.1); */
+            box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
+        }
+
+
+
+
+
+    /* Hide the first column in the search results table */
+    #search-results table th:first-child,
+    #search-results table td:first-child {
+        display: none;
+    }
+
+    /* Style the scrollbar */
+    #search-results {
+        overflow-y: scroll; /* Ensure vertical scrollbar is visible */
+        scrollbar-width: thin; /* Set the width of the scrollbar */
+        scrollbar-color: #304D70 transparent;
+        scrollbar-radius: 7px;
+    }
+
+
+
+
+
+
+    .middleBody-Right {
+        height: 108%;
+        width: 30%;
+        padding-left: 20px;
+    }
+
+    .middleBody-Body {
+        padding-left: 5px;
+        height: 100%;
+        border-radius: 7px;
+        background-color: #304D70;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .middleBody-Upper {
+        padding-top: 35px;
+        padding-left: 20px;
+        color: white;
+        height: 15%;
+    }
+
+        .middleBody-Upper p {
+            padding-left: 2px;
+            margin-top: -10px;
+        }
+
+    .middleBody-Middle {
+        height: 60%;
+        width: 100%;
+        position: relative; /* Add this */
+    }
+
+        .middleBody-Middle img {
+            padding-top: 20px;
+            width: 100%;
+        }
+
+    .middleBody-Bottom {
+        background-color: white;
+        border-radius: 5px;
+        border: 0px solid transparent;
+        height: 33%;
+        width: 90%;
+        margin: 350px auto 0;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+
+
+
+    /*First Body*/
+    .firstBody {
+        padding: 19px 20px;
+    }
+
+    .Bottom-Upper {
+        /* background-color: red; */
+    }
+
+        .Bottom-Upper p {
+            margin: 0px;
+        }
+
+    .Bottom-Middle {
+        align-items: center;
+        display: flex;
+        margin-top: -7px;
+    }
+
+    .Bottom-Middle-Left {
+        width: 80%;
+    }
+
+        .Bottom-Middle-Left p {
+            margin: 0px;
+        }
+
+    .Bottom-Middle-Right {
+        width: 20%;
+        text-align: center;
+        margin: 0px;
+    }
+
+        .Bottom-Middle-Right p {
+            border-radius: 5px;
+            margin: 0px;
+            padding: 3px 8px;
+            color: rgba(48, 77, 112, 1);
+            background-color: rgba(48, 77, 112, 0.2);
+        }
+
+
+    .Bottom-Middle-Space {
+        height: 5px;
+    }
+
+</style>
+
+
+<div class="memberBody">
+    <div class="upperBody">
+        <h4><b>Employees</b></h4>
+    </div>
+
+    <div class="middleBody">
+
+        <div class="middleBody-Left">
+
+            <!--Search Bar-->
+            <div class="searchBar">
+                <div class="search-bar">
+                    <form class="search-form" asp-controller="Employee" asp-action="Index" method="get">
+                        <div class="search-container">
+                            <input type="text" name="search" id="search" placeholder="  Search..." class="search-input">
+                            <button type="submit" class="search-button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="search-btn">
+                    <button id="openPopupButton">Add Employee</button>
+                </div>
+            </div>
+
+            <!--Table-->
+            <div class="middle-table">
+
+                <div class="middle-table-bottom">
+
+                    <!-- Hidden pop-up form -->
+                    <div id="popupFormContainer" class="popup-container">
+                        <form method="post" asp-controller="Employee" asp-action="AddEmployee" class="popup-form">
+                            <!-- Member information fields -->
+                            <div class="inputBox">
+                                <label for="FirstName" class="control-label">First Name</label>
+                                <input type="text" id="FirstName" class="form-control" name="FirstName" required>
+                            </div>
+
+                            <div class="inputBox">
+                                <label for="LastName" class="control-label">Last Name</label>
+                                <input type="text" id="LastName" class="form-control" name="LastName" required>
+                            </div>
+
+
+                            <div class="inputBox">
+                                <label for="DateOfBirth" class="control-label">DateOfBirth</label>
+                                <input type="date" id="DateOfBirth" class="form-control" name="DateOfBirth" required>
+
+                            </div>
+
+                            <div class="inputBox">
+                                <label for="Address" class="control-label">Address</label>
+                                <input type="text" id="Address" class="form-control" name="Address" required>
+                            </div>
+
+                            <div class="inputBox">
+                                <label for="PhoneNumber" class="control-label">PhoneNumber</label>
+                                <input type="text" id="PhoneNumber" class="form-control" name="PhoneNumber" required>
+
+                            </div>
+
+                            <div class="inputBox">
+                                <label for="Email" class="control-label">Email</label>
+                                <input type="text" id="Email" class="form-control" name="Email" required>
+
+                            </div>
+
+                            <div class="inputBox">
+                                <button type="submit" class="edit-Button">Add Employee</button>
+                                <button type="button" id="cancelButton" class="edit-Button">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="search-results">
+                        <!-- Display search results here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="middleBody-Right">
+            <div class="middleBody-Body">
+                <div class="middleBody-Upper">
+                    <h4><b>Overall Statistics</b></h4>
+                    <p>Overview @DateTime.Now.Year</p>
+                </div>
+
+                <div class="middleBody-Middle">
+                    <img src="~/images/member3D.png" />
+                    <div class="middleBody-Bottom">
+                        <div class="firstBody">
+                            <div class="Bottom-Upper">
+                                <p><b>XXXX</b></p>
+                            </div>
+                            <div class="Bottom-Middle">
+                                <div class="Bottom-Middle-Left">
+                                    <p>£X</p>
+                                </div>
+
+                                <div class="Bottom-Middle-Right">
+                                    <p><b>56%</b></p>
+                                </div>
+                            </div>
+                            <div class="Bottom-Middle-Space">
+                            </div>
+                            <div class="Bottom-Low">
+                                <div class="progress-container">
+                                    <div class="progress-bar" id="progressBar">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get references to the button, pop-up container, and overlay
+        const openPopupButton = document.getElementById("openPopupButton");
+        const popupFormContainer = document.getElementById("popupFormContainer");
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+
+        // Function to open the pop-up
+        function openPopup() {
+            popupFormContainer.style.display = "block";
+            document.body.appendChild(overlay);
+        }
+
+        // Function to close the pop-up
+        function closePopup() {
+            popupFormContainer.style.display = "none";
+            overlay.remove();
+        }
+
+        // Event listener for the button click
+        openPopupButton.addEventListener("click", openPopup);
+
+        // Event listener for the overlay click (to close the pop-up)
+        overlay.addEventListener("click", closePopup);
+    });
+
+
+    // Attach an event listener to the search input field
+    document.getElementById('search').addEventListener('input', function () {
+        // Get the value entered in the search input field
+        var searchQuery = this.value;
+
+        // Make an AJAX request to the server to fetch search results
+        fetch('/Employee/Search?search=' + encodeURIComponent(searchQuery))
+            .then(response => response.text())
+            .then(html => {
+                // Update the search results container with the fetched results
+                document.getElementById('search-results').innerHTML = html;
+            })
+            .catch(error => console.error('Error fetching search results:', error));
+    });
+
+    // Trigger an initial search when the page loads to show all members
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/Employee/Search')
+            .then(response => response.text())
+            .then(html => {
+                // Update the search results container with the fetched results
+                document.getElementById('search-results').innerHTML = html;
+            })
+            .catch(error => console.error('Error fetching search results:', error));
+    });
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const cancelButton = document.getElementById("cancelButton");
+        const popupFormContainer = document.getElementById("popupFormContainer");
+
+        // Function to close the pop-up
+        function closePopup() {
+            popupFormContainer.style.display = "none";
+        }
+
+        // Event listener for the cancel button click
+        cancelButton.addEventListener("click", closePopup);
+    });
+
+
+</script>
+
+
+<script>
+    // Set progress to 70%
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.borderRadius = '5px';
+    progressBar.innerHTML = '';
+    progressBar.style.height = '20px';
+
+    // Set the width of the filled portion to 50%
+    progressBar.style.width = '100%';
+
+    // Set the background colors for the filled and remaining portions
+    progressBar.style.background = 'linear-gradient(to right, #304D70 50%, #D9D9D9 90%)';
+
+</script>

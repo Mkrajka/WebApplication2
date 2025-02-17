@@ -1,0 +1,379 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using WebApplication1.Areas.Identity.Data;
+@using WebApplication1.Data;
+@model WebApplication1.Models.ViewModels.DashboardViewModel
+@inject UserManager<ApplicationUser> UserManager
+@inject WebDbContext dbContext
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "/Pages/_Layout.cshtml";
+}
+
+@{
+    var entryLogsPerDayJson = Newtonsoft.Json.JsonConvert.SerializeObject(Model.EntryLogsPerDay.Values);
+    var currentUser = await UserManager.GetUserAsync(User);
+    var currentDate = DateTime.Now.ToString("dd MMMM yyyy");
+
+
+    string currentUserId = currentUser.Id;
+    int leftMemberCount = dbContext.Members.Count(m => m.UserId == currentUserId && m.MemberDateLeft != null);
+    int totalEmployeeCount = dbContext.Employees.Count(e => e.UserId == currentUserId);
+    int totalClasses = dbContext.Classes.Count(e => e.UserId == currentUserId);
+
+
+}
+
+<div class="dashboard-Background">
+    
+    <div class="left-dashboard">
+        <div class="left-dashboard-upper">
+            <div class="right-welcome">
+                @if (currentUser != null)
+                {
+                    <h2><b>Welcome back @currentUser.FirstName @currentUser.LastName!</b></h2>
+                }
+
+                <p>@currentDate</p>
+
+                <div class="right-welcome-middle">
+                    <a href="/Members/Index" class="explore-button">Explore</a>
+                </div>
+
+            </div>
+            <div class="left-welcome">
+                <img src="/images/WelcomeBar_Icon.png" />
+            </div>
+        </div>
+
+        <!--Graphs-->
+        <div class="left-dashboard-middle">
+            <div class="firstBarGraph">
+                <div class="Graph-Canvass">
+                    <div class="text-Design">
+                        <div class="text-Design-left">
+                            <p><b>Average Gym Attendance</b></p>
+                        </div>
+                        <div class="text-Design-right">
+                            <p>Weekly</p>
+                        </div>
+                    </div>
+                    <canvas id="entryLogsChart" width="150" height="75"></canvas>
+                </div>
+            </div>
+
+            <div class="secondBarGraph">
+                <div class="Graph-Canvass">
+                    <div class="text-Design">
+                    <div class="text-Design-left">
+                        <p><b>Joining vs Leaving Members</b></p>
+                    </div>
+                    </div>
+                    <canvas id="joiningLeavingMembersChart" width="110" height="44"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="left-dashboard-low">
+            <div class="firstBox">
+                <div class="firstBox-Upper">
+                    <div class="imageContent">
+                        <img src="/images/Cancellation_Icon.png" />
+                    </div>
+                    <div class="textContent">
+                        <h2>@leftMemberCount</h2>
+                    </div>
+                    <div class="textContentDescription">
+                        <p>Members</p>
+                    </div>
+                </div>
+                <div class="firstBox-Lower">
+                    <div class="textContentLower">
+                        <h4><b>Leaving</b></h4>
+                    </div>
+                    <div class="textContentDescriptionLower">
+                        <p style="background-color: rgba(48, 77, 112, 0.2); color: rgba(48, 77, 112, 1);"><b>Today</b></p>
+                    </div>
+                </div>
+            </div>
+            <div class="firstBox">
+                <div class="firstBox-Upper">
+                    <div class="imageContent">
+                        <img src="/images/Classes_Icon.png" />
+                    </div>
+                    <div class="textContent">
+                        <h2>@totalClasses</h2>
+                    </div>
+                    <div class="textContentDescription">
+                        <p>Members</p>
+                    </div>
+                </div>
+                <div class="firstBox-Lower">
+                    <div class="textContentLower">
+                        <h4><b>Classes</b></h4>
+                    </div>
+                    <div class="textContentDescriptionLower">
+                        <p style="background-color:  rgba(255, 49, 49, 0.2); color:rgba(255, 49, 49, 1);"><b>Today</b></p>
+                    </div>
+                </div>
+            </div>
+            <div class="firstBox">
+                <div class="firstBox-Upper">
+                    <div class="imageContent">
+                        <img src="/images/StaffMember_Icon.png" />
+                    </div>
+                    <div class="textContent">
+                        <h2>@totalEmployeeCount</h2>
+                    </div>
+                    <div class="textContentDescription">
+                        <p>Employees</p>
+                    </div>
+                </div>
+                <div class="firstBox-Lower">
+                    <div class="textContentLower">
+                        <h4><b>Staff</b></h4>
+                    </div>
+                    <div class="textContentDescriptionLower">
+                        <p style="background-color: rgba(61, 217, 235, 0.2); color: rgba(61, 217, 235, 1);"><b>Today</b></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    
+    <div class="right-dashboard">
+        <div class="right-dashboard-box" style="background-color: rgba(48, 77, 112, 0.2); color: rgba(48, 77, 112, 1); box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);  ">
+            <dic class="right-dashboard-icon">
+                <img src="~/images/newMembers (2).png" />
+            </dic>
+            <div class="right-dashboard-info">
+                <p>New Members</p>
+            </div>
+            <div class="right-dashboard-content">
+                <h2>@Model.NewMembersCount</h2>
+            </div>
+        </div>
+
+        <div class="right-dashboard-box" style="background-color:  rgba(255, 49, 49, 0.2); color:rgba(255, 49, 49, 1); box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);">
+            <dic class="right-dashboard-icon">
+                <img src="/images/activeMembers.png" />
+            </dic>
+            <div class="right-dashboard-info">
+                <p>Active Admissions</p>
+            </div>
+            <div class="right-dashboard-content">
+                <h2>@Model.ActiveAdmissionMembersCount</h2>
+            </div>
+        </div>
+
+        <div class="right-dashboard-box" style="background-color: rgba(61, 217, 235, 0.2); color: rgba(61, 217, 235, 1); box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);">
+            <dic class="right-dashboard-icon">
+                <img src="/images/pound.png" />
+            </dic>
+            <div class="right-dashboard-info">
+                <p>Fees Amount</p>
+            </div>
+            <div class="right-dashboard-content">
+                <h2>@Model.TotalFeesAmount</h2>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.10/chartjs-plugin-annotation.min.js"></script>
+
+@section Scripts {
+
+    <script>
+
+        // Code for the Bar Graph
+        // Explanatory data for the bar graph
+        var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+        // Function to rotate array to position current day at the end
+        function rotateArray(arr, count) {
+            return arr.slice(count, arr.length).concat(arr.slice(0, count));
+        }
+
+        // Get the current day index (0 for Sunday, 1 for Monday, etc.)
+        var currentDayIndex = new Date().getDay() - 6;
+
+        // Rotate the daysOfWeek array to position the current day at the end
+        var rotatedDays = rotateArray(daysOfWeek, currentDayIndex);
+
+        var entryLogsPerDayData = @Html.Raw(entryLogsPerDayJson);
+
+
+
+        var data = {
+            labels: rotatedDays,
+            datasets: [{
+                label: 'Number of Entries',
+                data: entryLogsPerDayData,
+                // data: [4, 8, 12, 6, 10, 18, 7], // Replace with your actual data data: entryCounts,
+                backgroundColor: '#304D70',
+                borderColor: '#304D70',
+                borderWidth: 1,
+                borderRadius: 7,
+                borderSkipped: false,
+            }]
+        };
+
+
+        // Bar graph options
+        var options = {
+            scales: {
+                x: {
+                    type: 'category',
+                    position: 'bottom',
+                    grid: {
+                        display: false,
+                    },
+                    ticks: {
+                        color: 'black'
+                    },
+                    border: {
+                        display: false
+                    },
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        display: false
+                    },
+                    grid: {
+                        display: false,
+                    },
+                    border: {
+                        display: false
+                    },
+                },
+            },
+            plugins: {
+                legend: {
+                    display: false // Set to false to hide legend
+                }
+            },
+            indexAxis: 'x', // Set the axis for barPercentage and categoryPercentage
+            barPercentage: 0.9, // Adjust the bar width (0.5 means 50% of the available space)
+            // categoryPercentage: 0.01 // Adjust the space between bars (0.7 means 70% of the available space)
+        };
+
+        var ctx = document.getElementById('entryLogsChart').getContext('2d');
+        var entryLogsChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    </script>
+
+
+    @* <script src="~/js/Views/Dashboard/lineGraph.js" asp-append-version="true"></script> *@
+    <script>
+
+        var monthsOfYear = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        function rotateArray(arr, count) {
+            return arr.slice(count, arr.length).concat(arr.slice(0, count));
+        }
+
+        var currentMonthIndex = new Date().getMonth() + 1;
+        var rotatedMonths = rotateArray(monthsOfYear, currentMonthIndex);
+
+        var gradientJoining = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientJoining.addColorStop(0, 'rgba(48, 77, 112, 1)'); // Starting color (same as borderColor)
+        gradientJoining.addColorStop(1, 'rgba(255, 216, 3, 0)'); // Ending color with alpha channel 0
+
+        var gradientLeaving = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientLeaving.addColorStop(0, 'rgba(65, 184, 213, 1)'); // Starting color (same as borderColor)
+        gradientLeaving.addColorStop(1, 'rgba(65, 184, 213, 0)'); // Ending color with alpha channel 0
+
+
+
+        var data = {
+            labels: rotatedMonths,
+            datasets: [
+                {
+                    label: 'Joining Members',
+                    data: [@string.Join(",", @Model.MembersJoinedPerMonth.Values.Reverse().Select(entry => entry.Count))],
+                    borderColor: '#304D70',
+                    backgroundColor: gradientJoining,
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    tension: 0.4,
+                    hoverRadius: 8,
+                    hitRadius: 10,
+                    fill: true,
+                },
+                {
+                    label: 'Leaving Members',
+                    data: [@string.Join(",", @Model.MembersLeftPerMonth.Values.Reverse().Select(entry => entry.Count))],
+                    borderColor: '#41B8D5',
+                    backgroundColor: gradientLeaving,
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    tension: 0.4,
+                    hoverRadius: 8,
+                    hitRadius: 10,
+                    fill: true,
+                }
+            ]
+        };
+
+        var options = {
+            scales: {
+                x: {
+                    type: 'category',
+                    position: 'bottom',
+                    grid: {
+                        display: false,
+                    },
+                    ticks: {
+                        color: 'black'
+                    },
+                    border: {
+                        display: false
+                    },
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        display: false
+                    },
+                    grid: {
+                        display: false, // Set display to false to remove y-axis grid lines
+                    },
+                    border: {
+                        display: false
+                    },
+                },
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    enabled: true,
+                    intersect: false,
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+            },
+        };
+
+
+        var ctx = document.getElementById('joiningLeavingMembersChart').getContext('2d');
+        var joiningLeavingMembersChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: options
+        });
+    </script>
+
+    }

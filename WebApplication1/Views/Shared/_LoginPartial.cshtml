@@ -1,0 +1,55 @@
+﻿@using WebApplication1.Areas.Identity.Pages.Account
+@model LoginModel
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gym Management Web Application</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link href="https://fonts.cdnfonts.com/css/writing-signature" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/Views/Register&Login/Login.css" />
+</head>
+
+
+
+<div class="main-Login">
+    <div class="first-row-main-Login">
+        <img src="/images/logo.png" alt="Logo">
+    </div>
+
+    <div class="second-row-main-Login">
+        <form class="login-form" id="account" method="post" action="~/Identity/Account/Login">
+            <h2><strong>Sign In</strong></h2>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-floating">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="Input.Email" class="form-label"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                <label asp-for="Input.Password" class="form-label"></label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <input class="form-check-input" asp-for="Input.RememberMe" id="rememberMe" />
+                <label class="form-check-label" for="rememberMe">  @Html.DisplayNameFor(m => m.Input.RememberMe)</label>
+            </div>
+
+            <button id="login-submit" type="submit" class="login-Button"><b>Log In</b></button>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

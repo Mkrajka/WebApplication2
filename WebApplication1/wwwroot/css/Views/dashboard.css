@@ -1,0 +1,442 @@
+﻿.dashboard-Background {
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    height: 100%;
+    background-color: #FAFAFA;
+}
+
+.right-welcome {
+    width: 80%;
+    height: 100%;
+    padding: 20px;
+}
+
+    .right-welcome p {
+        margin-top: -10px;
+        margin-left: 5px;
+        color: #737373;
+    }
+
+.left-welcome {
+    width: 20%;
+    height: 100%;
+    padding-right: 5px;
+}
+
+    .left-welcome img {
+        margin-top: -5px;
+        width: 90%;
+    }
+
+.right-welcome-middle {
+    margin-top: 30px;
+}
+
+    .right-welcome-middle p {
+        color: black;
+    }
+
+.explore-button {
+    border-radius: 5px;
+    background-color: #41B8D5;
+    color: white;
+    padding: 6px 20px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    text-decoration: none; /* Remove underline */
+    display: inline-block;
+}
+
+    .explore-button:hover {
+        color: white;
+        transition: 0.5s;
+        transform: scale(1.1);
+    }
+
+.left-dashboard {
+    height: 100%;
+    width: 80%;
+    padding: 15px;
+}
+
+.right-dashboard {
+    padding: 15px;
+    padding-right: 25px;
+    height: 100%;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.left-dashboard-upper {
+    background-color: white;
+    height: 25%;
+    width: 100%;
+    border-radius: 7px;
+    display: flex;
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+}
+
+.left-dashboard-middle {
+    display: flex;
+    height: 50%;
+    padding-bottom: 10px;
+    padding-top: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.firstBarGraph {
+    border-radius: 7px;
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    background-color: white;
+    height: 100%;
+    width: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Graph-Canvass {
+    background-color: white;
+    width: 90%;
+    height: 85%;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    .Graph-Canvas canvas {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+.secondBarGraph {
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    background-color: white;
+    width: 52%;
+    height: 100%;
+    border-radius: 6px;
+    /* margin: 7px; */
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /*padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;*/
+    /*margin: 20px;*/
+
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+
+    .secondBarGraph canvas {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+.left-dashboard-low {
+    height: 25%;
+    /*background-color: yellow;*/
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.firstBox {
+    width: 32%;
+    border-radius: 6px;
+    height: 100%;
+    padding-top: 15px;
+    background-color: white;
+    /*border: 2px solid #ECECEC;*/
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+}
+
+.firstBox-Upper {
+    height: 50%;
+    width: 100%;
+    display: flex;
+}
+
+.firstBox-Lower {
+    height: 50%;
+    width: 100%;
+    display: flex;
+}
+
+
+.left-dashboard-upper {
+    color: black;
+    padding-top: 2px;
+}
+
+
+/*.dashboard-Background {
+    width: 100%;
+
+    padding: 30px;
+    display: flex;
+    height: 100%;
+     background-color: white; 
+}*/
+
+
+
+.welcome-Dashboard h2 {
+    margin-bottom: 0px;
+}
+
+.welcome-Dashboard p {
+    opacity: 0.7;
+}
+
+.upperDashboardBar {
+    height: 20%;
+    width: 95%;
+    display: flex;
+    justify-content: space-between;
+    color: #525252;
+}
+
+.headingDashboard h3 {
+    font-weight: bolder;
+}
+
+.BarBox {
+    background-color: white;
+    width: 30%;
+    height: 85px;
+    border-radius: 6px;
+    box-shadow: 0 0 8px #525252;
+    display: flex;
+    transition: background 0.5s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+    .BarBox::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 100%;  
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to left, #525252, #525252);  
+        transition: right 0.5s;   
+        background-size: 200% 100%; 
+    }
+
+    .BarBox:hover::before {
+        right: 0; 
+    }
+
+    .BarBox:hover {
+        transition: 0.5s;
+        color: white;
+    }
+
+
+.BarBox-Icon {
+    z-index: 2;
+    width: 30%;
+    height: 100%;
+    border-radius: 6px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 8px #525252;
+}
+
+    .BarBox-Icon img {
+        width: 45%;
+    }
+
+.BarBox-Values {
+    z-index: 2;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    width: 65%;
+    text-align: center;
+}
+
+
+    .BarBox-Values h1 {
+        margin-top: 8px;
+        margin-bottom: 0px;
+        font-weight: bold;
+    }
+
+    .BarBox-Values p {
+        opacity: 0.9;
+        border-radius: 5px;
+        padding: 0px 5px;
+        margin-top: 0px;
+        font-weight: bold;
+    }
+
+
+
+.middleLayer-Dashboard {
+    height: 30%;
+    width: 100%;
+    display: flex;
+}
+
+.text-Design {
+    width: 100%;
+    height: 20%;
+    display: flex;
+}
+
+.text-Design-left {
+    width: 70%;
+    text-align: left;
+}
+
+    .text-Design-left p {
+        font-size: 16px;
+    }
+
+    .text-Design-right {
+        width: 30%;
+        align-items: center;
+    }
+
+    .text-Design-right p {
+        background-color: #ECECEC;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin : 0;
+    }
+
+.lastLayer-Dashboard {
+    width: 95%;
+    height: 30%;
+    background-color: transparent;
+    display: flex;
+    justify-content: space-between;
+}
+
+.imageContent {
+    height: 100%;
+    width: 50%;
+    margin: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+    .imageContent img {
+        margin: 0px;
+        width: 65%;
+    }
+
+.textContent {
+    height: 100%;
+    width: 30%;
+    margin: 0;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+    .textContent h1 {
+        margin: 0px;
+    }
+
+.textContentDescription {
+    margin: 0px;
+    margin-right: 20px;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    /*box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);*/
+}
+
+    .textContentDescription p {
+        margin: 0px;
+    }
+
+.textContentLower {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+    .textContentLower h4 {
+        margin: 0;
+        margin-left: 20px;
+    }
+
+.textContentDescriptionLower {
+    width: 50%;
+    text-align: center;
+}
+
+    .textContentDescriptionLower p {
+        margin: 0px;
+        margin-left: 38px;
+        color: #FFCC00;
+        color: rgba(61, 217, 235, 1);
+        /*background-color: #ffeb98; 
+        /*background-color: rgba(61, 217, 235, 0.2);*/
+        padding: 1px 22px;
+        border-radius: 15px;
+        display: inline-block;
+    }
+
+
+.right-dashboard-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bolder;
+    border-radius: 5px;
+    width: 100%;
+    height: 28%;
+    text-align: center;
+}
+
+.right-dashboard-icon img {
+    height: 50px;
+}
+
+.right-dashboard-info {
+    height: fit-content;
+}
+
+    .right-dashboard-info p {
+        margin: 0;
+    }
+
+.right-dashboard-content {
+    height: fit-content;
+}
+
+    .right-dashboard-content h2 {
+        margin: 0;
+    }
